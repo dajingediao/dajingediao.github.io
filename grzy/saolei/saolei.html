@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .scene{
+            width:500px;
+            height:500px;
+            background: #ccc;
+            margin: 0 auto;
+            border-top: 1px solid;
+            border-right: 1px solid;
+        }
+        .aa{
+            width:49px;
+            height:49px;
+            background: #ccc;
+            float: left;
+            border-left:1px solid;
+            border-bottom:1px solid;
+        }
+        .control{
+            width: 100px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+        }
+        .show{
+            background-image: url("img/1.jpg");
+            background-size: 100% 100%;
+        }
+        .geshu{
+            font-size: 40px;
+            text-align: center;
+            background: #fff;
+        }
+        .flag{
+            background-image: url("img/2.jpg");
+            background-size: 100% 100%;
+        }
+        .flagnum{
+            width:100px;
+            height:100px;
+            text-align: center;
+        }
+        .mb{
+            width:100%;
+            height:925px;
+            background: red;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" value="简单" class="jd">
+    <input type="button" value="困难" class="kn">
+<div class="scene"></div>
+<div class="control">
+    <time></time>
+    <div class="flagnum">flag:</div>
+    <div class="sj">1000</div>
+    <div>排行</div>
+</div>
+</body>
+<script src="js/jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        var num;
+        var t;
+        var i=1000;
+        function move3() {
+            i--;
+            $(".sj").html(i)
+        }
+        function kaishi(num) {
+            $(".flagnum").html("flag:"+num);
+            do{
+                $(".scene").empty();
+                for(var i=0;i<10;i++){
+                    for (var j=0;j<10;j++){
+                        var isLei=Math.random()>0.9;
+                        $("<div>").addClass(function () {
+                                    if (isLei){
+                                        return "aa lei"
+                                    }else{
+                                        return "aa"
+                                    }
+                                })
+                                .attr("id",i+"-"+j)
+                                .data("pos",{x:i,y:j})
+                                .mousedown(q)
+                                .appendTo(".scene");
+                    }
+                }
+            }while ($(".lei").length!=num);
+            function q(e) {
+                if(e.which==1){
+                    a.call(this)
+                }
+                if(e.which==3){
+                    b.call(this)
+                }
+            }
+            function a() {
+                if($(this).hasClass("flag")){
+                    return
+                }
+                if($(this).hasClass("lei")){
+                    $(".lei").addClass("show");
+                    alert("请重新选择难度");
+                    return;
+                }else{
+                    var pos=$(this).data("pos");
+                    var n=0;
+                    for (var i=pos.x-1;i<=pos.x+1;i++){
+                        for (var j=pos.y-1;j<=pos.y+1;j++){
+                            if($("#"+i+"-"+j).hasClass("lei")){
+                                n++
+                            }
+                        }
+                    }
+                    /*if($("#"+(pos.x-1)+"-"+(pos.y-1)).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x)+"-"+(pos.y-1)).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x+1)+"-"+pos.y-1).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x-1)+"-"+pos.y).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x+1)+"-"+pos.y).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x-1)+"-"+(pos.y+1)).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x)+"-"+(pos.y+1)).hasClass("lei")){
+                     n++
+                     }
+                     if($("#"+(pos.x+1)+"-"+(pos.y+1)).hasClass("lei")){
+                     n++
+                     }*/
+                    $(this).html(n).addClass("geshu");
+                    for (var i=pos.x-1;i<=pos.x+1;i++){
+                        for (var j=pos.y-1;j<=pos.y+1;j++){
+                            if (n==0){
+                                var obj=$("#"+i+"-"+j)
+                                if(obj.length==1&&!obj.hasClass("geshu")){
+                                    a.call(obj[0])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            function b() {
+                if($(this).hasClass("geshu")){
+                    return
+                }
+                if($(this).hasClass("flag")){
+                    $(this).removeClass("flag");
+                    num++;
+                }else {
+                    num--;
+                    if(num<0){
+                        num++;
+                        alert("选择错误");
+                        return;
+                    }
+                    $(this).addClass("flag");
+                    if(num==0){
+                        if ($(".flag").filter(".lei").length==15){
+                            alert("恭喜你过关了")
+                        }
+                    }
+                }
+                $(".flagnum").html("flag:"+num)
+            }
+            $(document).on("contextmenu",function (e) {
+                e.preventDefault()
+            });
+        }
+        $(".jd").click(function () {
+            clearInterval(t);
+            i=1000;
+            $(".scene").empty();
+            num=10;
+            a=num;
+            kaishi(num);
+            t=setInterval(move3,1000);
+        });
+        $(".kn").click(function () {
+            clearInterval(t);
+            i=1000;
+            $(".scene").empty();
+            num=15;
+            kaishi(num);
+            t=setInterval(move3,1000)
+        });
+
+    });
+
+
+
+</script>
+</html>
